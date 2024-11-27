@@ -5,7 +5,7 @@ from transformers import BertTokenizer, BertForSequenceClassification
 import torch
 
 # Load the saved BERT model and tokenizer (this will point to the model directory after downloading)
-model_path = r'C:/Success-4-1/bert_model'  # Corrected path with forward slashes
+model_path = r'bert_model'  # Corrected path with forward slashes
 tokenizer = BertTokenizer.from_pretrained(model_path)
 model = BertForSequenceClassification.from_pretrained(model_path)
 model.eval()  # Set the model to evaluation mode

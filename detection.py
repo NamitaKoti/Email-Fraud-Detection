@@ -5,7 +5,7 @@ from transformers import BertTokenizer, BertForSequenceClassification
 import torch
 
 # Load the saved BERT model and tokenizer (this will point to the model directory after downloading)
-model_path = r'bert_model'  # Corrected path with forward slashes
+model_path = r'bert_model'  # Ensure the correct path
 tokenizer = BertTokenizer.from_pretrained(model_path)
 model = BertForSequenceClassification.from_pretrained(model_path)
 model.eval()  # Set the model to evaluation mode
@@ -29,19 +29,16 @@ st.set_page_config(page_title="Email Fraud Detection")
 st.markdown(
     """
     <style>
-    /* Set the background image for the app */
-    *{
-        box-sizing: border-box
+    * {
+        box-sizing: border-box;
     }
     .stApp {
         background-image: url("https://i.pinimg.com/736x/6e/46/da/6e46da2c1712b7daaba49f78988221a4.jpg");
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
-        color: white; /* Default text color */
+        color: white;
     }
-
-    /* Custom title styling */
     .custom-title {
         float: left;
         margin-left: -24rem;
@@ -49,8 +46,6 @@ st.markdown(
         font-size: 3rem;
         font-family: lucida;
     }
-
-    /* Styling for the left input section */
     .left-section {
         float: left;
         margin-left: -24rem;
@@ -58,116 +53,47 @@ st.markdown(
         font-size: 1.7rem;
         font-family: lucida;
     }
-
-    /* Text area styling */
-   .stTextArea {
+    .stTextArea {
         margin-left: -24rem !important;
-        width: 600px !important; /* Full width */
-        # resize: none; /* Disable resizing */
+        width: 600px !important;
     }
-
-    /* Hover effect for the text area */
-    .stTextArea textarea:hover {
-        transition: font-size 0.3s ease;
-        # resize: none !important;
-    }
-
-    # /* Button styling */
-    # .stButton>button {
-    #     margin-left: -24rem !important;
-    #     background-color: #008CBA; /* Blue background */
-    #     color: white;
-    #     padding: 10px 20px;
-    #     font-size: 16px;
-    #     border-radius: 5px; /* Rounded corners */
-    #     border: none;
-    #     cursor: pointer;
-    #     transition: background-color 0.3s ease;
-    # }
-
     .stButton>button {
-    margin-left: -24rem !important;
-    background-color: #008CBA; /* Blue background */
-    color: white; /* Default text color */
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px; /* Rounded corners */
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition for text color and background */
-}
-
-.stButton>button:hover {
-    color: white; /* Text color on hover */
-    background-color: #005f73; /* Darker shade of blue when hovered */
-}
-
-.stButton>button:active {
-    color: white; /* Ensure text color stays white when the button is pressed */
-    background-color: #007ea7; /* Keep a consistent background color when the button is clicked */
-}
-
-
-    /* Alert box styling */
-    .custom-alert {
-        margin-top: 20px;
-        background-color: #f8d7da; /* Light red background */
-        color: #721c24; /* Dark red text */
-        border: 1px solid #f5c6cb;
-        padding: 15px;
-        border-radius: 5px;
+        margin-left: -24rem !important;
+        background-color: #008CBA;
+        color: white;
+        padding: 10px 20px;
         font-size: 16px;
-        font-weight: bold;
-        text-align: center;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        transition: color 0.3s ease, background-color 0.3s ease;
     }
-
-    /* Container for results and confidence scores */
-    .result-container1{
+    .stButton>button:hover {
+        background-color: #005f73;
+    }
+    .result-container {
+        float: left;
+        font-size: large;
+    }
+    .result-container1 {
         float: left;
         margin-left: -24rem;
-        # margin-right: -50rem;
-        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+        background-color: rgba(0, 0, 0, 0.6);
         border-radius: 10px;
         padding: 20px;
         margin-top: 1rem;
-        width: 100%; /* Adjust width */
+        width: 100%;
         max-width: 600px;
         font-size: 20px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     }
-    .result-container {
-        float: left;
-        # margin-right: -50rem;
-        # background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-        # border-radius: 10px;
-        # padding: 5px;
-        # margin-top: 2rem;
-        # width: 100%; /* Adjust width */
-    #     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    font-size: large;
-    }
-
-    /* Pie chart styling without background */
-.pie-chart {
-        margin-top: 2rem;
-        margin-right: -10rem;
-        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-        border-radius: 10px;
-        padding: 20px;
-        margin-top: 2rem;
-        width: 80%;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-        text-align: center;
-    }
     .percentage {
-          float: left;
-        # margin-right: -50rem;
-        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+        float: left;
+        background-color: rgba(0, 0, 0, 0.6);
         border-radius: 10px;
         padding: 20px;
         margin-top: -1rem;
-        width: 100%; /* Adjust width */
+        width: 100%;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     }
     </style>
@@ -216,8 +142,12 @@ with col1:
                 confidence_non_fraudulent = probabilities[0][0]
                 confidence_fraudulent = probabilities[0][1]
 
+                # Store confidence scores for later use
+                st.session_state['confidence_non_fraudulent'] = confidence_non_fraudulent
+                st.session_state['confidence_fraudulent'] = confidence_fraudulent
+
                 # Determine result based on threshold
-                threshold = 0.5  # Adjust this as needed
+                threshold = 0.5
                 result = "Fraudulent" if confidence_fraudulent >= threshold else "Non-Fraudulent"
 
                 # Display result in a styled box
@@ -231,12 +161,23 @@ with col1:
                 )
 
 with col2:
-    if input_sms.strip() != "":  # Display only when there's input
+    if 'confidence_non_fraudulent' in st.session_state and 'confidence_fraudulent' in st.session_state:
+        confidence_non_fraudulent = st.session_state['confidence_non_fraudulent']
+        confidence_fraudulent = st.session_state['confidence_fraudulent']
+
+        # Add the heading for Confidence Scores
+        st.markdown(
+            """
+            <div class="result-container">
+                <p style="font-size: 2rem; font-weight: bold; color: white;">Confidence Scores:</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Display confidence percentages
         st.markdown(
             f"""
-            <div class="result-container">
-                <p style="font-size: 2rem; font-weight: bold;">Confidence Scores:</p>
-            </div>
             <div class="percentage">
                 <p style="font-size: 1.3rem;">Non-Fraudulent: <span style="font-size: 1.3rem;">{confidence_non_fraudulent:.2%}</span></p>
                 <p style="font-size: 1.3rem;">Fraudulent: <span style="font-size: 1.3rem;">{confidence_fraudulent:.2%}</span></p>
@@ -248,10 +189,18 @@ with col2:
         # Pie chart data
         labels = ['Non-Fraudulent', 'Fraudulent']
         sizes = [confidence_non_fraudulent, confidence_fraudulent]
-        colors = ['#66D280' , '#CC3950']  # Green for non-fraudulent, red for fraudulent
-        explode = (0.1, 0)  # Highlight non-fraudulent section
+        colors = ['#66D280', '#CC3950']
+        explode = (0.1, 0)
 
-
+        # # Create and display the pie chart
+        # fig, ax = plt.subplots(figsize=(8, 8))
+        # ax.pie(
+        #     sizes, explode=explode, labels=labels, colors=colors,
+        #     autopct='%1.1f%%', shadow=False, startangle=140,
+        #     textprops={'fontsize': 12, 'color': 'white'}
+        # )
+        # ax.axis('equal')
+        # st.pyplot(fig)
         fig, ax = plt.subplots(figsize=(50,50))  # Adjust size
         ax.pie(
             sizes, explode=explode, labels=labels, colors=colors,

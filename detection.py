@@ -2,32 +2,80 @@ import streamlit as st
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
 
-# Load the saved BERT model and tokenizer (this will point to the model directory after downloading)
-model_path = r'C:/Success-4-1/bert_model'  # Corrected path with forward slashes
+# Load the saved BERT model and tokenizer
+model_path = r'C:/Success-4-1/bert_model'  # Ensure the correct path
 tokenizer = BertTokenizer.from_pretrained(model_path)
 model = BertForSequenceClassification.from_pretrained(model_path)
 model.eval()  # Set the model to evaluation mode
 
 # Preprocess the text for BERT
 def transform_text(text):
-    # Tokenize and encode the input
-    encodings = tokenizer(       text,        truncation=True,
+    encodings = tokenizer(
+        text,
+        truncation=True,
         padding='max_length',
         max_length=128,  # Adjust this based on your training parameters
         return_tensors='pt'
     )
     return encodings['input_ids'], encodings['attention_mask']
 
-# Streamlit app
+# Streamlit app configuration
 st.set_page_config(page_title="Email Fraud Detection", layout="centered")
-st.title("📧 Email Fraud Detection")
 
+# Adding custom CSS for styling
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-image: url("https://i.pinimg.com/736x/6e/46/da/6e46da2c1712b7daaba49f78988221a4.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: white;
+    }
+    .stTextArea textarea {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: black;
+    }
+    .stButton>button {
+        background-color: #008CBA;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        transition: color 0.3s ease, background-color 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #005f73;
+    }
+    .result-box {
+        margin-top: 1rem;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 10px;
+        color: white;
+        font-size: 1.2rem;
+        font-weight: bold;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# App title
+st.title("📧 Email Fraud Detection")
 st.write("Detect whether an email is Fraudulent or Non-fraudulent.")
+
+# Text input for the email content
 input_sms = st.text_area("Enter the email text below:")
 
+# Button to analyze email
 if st.button('Analyze Email'):
     if input_sms.strip() == "":
-        st.warning("Please enter text before analyzing.")
+        st.warning("⚠️ Please enter text before analyzing.")
     else:
         with st.spinner("Analyzing..."):
             # Preprocess the input
@@ -49,16 +97,28 @@ if st.button('Analyze Email'):
             confidence_fraudulent = probabilities[0][1]
 
             # Determine result based on threshold
-            threshold = 0.5  # Adjust this as needed
+            threshold = 0.5
             result = "Fraudulent" if confidence_fraudulent >= threshold else "Non-Fraudulent"
 
-            # Display the result with confidence
+            # Display result in a styled box
             if result == "Fraudulent":
-                st.error(f"🚨 {result} Email Detected")
+                st.markdown(
+                    f"<div class='result-box' style='color: red;'>🚨 {result} Email Detected</div>",
+                    unsafe_allow_html=True
+                )
             else:
-                st.success(f"✅ {result} Email Detected")
+                st.markdown(
+                    f"<div class='result-box' style='color: green;'>✅ {result} Email Detected</div>",
+                    unsafe_allow_html=True
+                )
 
-            # Display confidence
-            st.write("### Confidence Scores:")
-            st.write(f"- Non-Fraudulent: {confidence_non_fraudulent:.2%}")
-            st.write(f"- Fraudulent: {confidence_fraudulent:.2%}")
+            # Display confidence scores
+            st.markdown(
+                f"""
+                <div class='result-box'>
+                    <p>Non-Fraudulent: {confidence_non_fraudulent:.2%}</p>
+                    <p>Fraudulent: {confidence_fraudulent:.2%}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
